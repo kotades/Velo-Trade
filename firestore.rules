@@ -25,7 +25,7 @@ service cloud.firestore {
       // Strict initialization rules
       allow create: if isOwner(userId) 
                     && request.resource.data.isAdmin == false
-                    && request.resource.data.demoBalance == 10000
+                    && request.resource.data.demoBalance in [0, 10000]
                     && request.resource.data.realBalance == 0;
       
       // Prevent self-promotion to admin or balance injection

@@ -43,7 +43,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUserData({
           email: 'e2e@velo-trade.com',
           displayName: 'E2E Trader',
-          demoBalance: 10000,
+          demoBalance: 0,
+          mainBalance: 0,
           realBalance: 0,
           tier: 'Bronze',
           isAdmin: false
@@ -57,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUserData({
           email: 'e2e@velo-trade.com',
           displayName: 'E2E Trader',
-          demoBalance: 10000,
+          demoBalance: 0,
+          mainBalance: 0,
           realBalance: 0,
           tier: 'Bronze',
           isAdmin: false
@@ -101,7 +103,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const initialData = {
               email: user.email,
               displayName: user.displayName || 'Velo Trader',
-              demoBalance: 10000,
+              demoBalance: 0,
+              mainBalance: 0,
               realBalance: 0,
               tier: 'Bronze',
               createdAt: new Date().toISOString(),

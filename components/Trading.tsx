@@ -45,10 +45,10 @@ const Trading: React.FC<TradingProps> = ({ navigateTo }) => {
   useGhostEngine(); 
   
   const [accountType, setAccountType] = useState<'demo' | 'real'>('demo');
-  const [mainBalance, setMainBalance] = useState<number>(2500);
+  const [mainBalance, setMainBalance] = useState<number>(userData?.mainBalance ?? 0);
   const [tradingBalanceOffset, setTradingBalanceOffset] = useState<number>(0);
   
-  const baseBalance = accountType === 'demo' ? (userData?.demoBalance ?? 10000) : (userData?.realBalance ?? 0);
+  const baseBalance = accountType === 'demo' ? (userData?.demoBalance ?? 0) : (userData?.realBalance ?? 0);
   const effectiveTradingBalance = Math.max(0, baseBalance + tradingBalanceOffset);
 
   const handleTransferFunds = (from: 'main' | 'trading', to: 'main' | 'trading', amount: number) => {

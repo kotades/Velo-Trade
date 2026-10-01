@@ -48,7 +48,7 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
   setRightPanelOpen,
   setActiveSideTab,
   setWalletTab,
-  mainBalance = 2500,
+  mainBalance = 0,
   tradingBalance,
   onTransferFunds
 }) => {
@@ -204,7 +204,7 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Demo Account</span>
                   <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">
-                    {isBalanceHidden ? "$••••••" : `$${(userData?.demoBalance ?? 10000).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} Available
+                    {isBalanceHidden ? "$••••••" : `$${(userData?.demoBalance ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} Available
                   </span>
                 </div>
                 {accountType === 'demo' && <Check className="w-3.5 h-3.5 text-amber-400" />}

@@ -51,11 +51,11 @@ test.describe('Navigation, Layout, and Copy-Trading', () => {
     const mobileMenu = page.locator('#mobile-menu');
     await expect(mobileMenu).toBeVisible();
     
-    // Check that 'Markets' link is visible inside the menu
-    await expect(page.getByRole('button', { name: 'Markets' }).first()).toBeVisible();
+    // Check that 'Live Markets' link is visible inside the menu
+    await expect(page.getByRole('button', { name: 'Live Markets' })).toBeVisible();
     
-    // Click Home inside mobile menu to close it
-    await page.getByRole('button', { name: 'Home', exact: true }).click();
+    // Click Home View inside mobile menu to close it
+    await page.getByRole('button', { name: 'Home View' }).click();
     
     // Wait for menu to hide
     await expect(mobileMenu).not.toBeVisible();

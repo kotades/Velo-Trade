@@ -30,30 +30,7 @@ const StockTerminal: React.FC<StockTerminalProps> = ({ onBack, tradingBalance, o
   const [executionModule, setExecutionModule] = useState<string>("ai_fill");
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [orderHistory, setOrderHistory] = useState<StockOrder[]>([
-    {
-      id: "ord-init-1",
-      ticker_symbol: "NVDA",
-      company_name: "NVIDIA Corporation",
-      company_logo_url: "https://img.logo.dev/nvidia.com?token=pk_YyrD1taGSRm1CfFTQh3K-w",
-      side: "BUY",
-      shares: 15,
-      price_per_share: 189.20,
-      total_cost: 2838.00,
-      timestamp: Date.now() - 3600000 * 4
-    },
-    {
-      id: "ord-init-2",
-      ticker_symbol: "AAPL",
-      company_name: "Apple Inc.",
-      company_logo_url: "https://img.logo.dev/apple.com?token=pk_YyrD1taGSRm1CfFTQh3K-w",
-      side: "BUY",
-      shares: 10,
-      price_per_share: 280.50,
-      total_cost: 2805.00,
-      timestamp: Date.now() - 3600000 * 24
-    }
-  ]);
+  const [orderHistory, setOrderHistory] = useState<StockOrder[]>([]);
 
   const categories = ["All", "Tech", "Semiconductor", "Finance", "Consumer", "Healthcare", "Automotive", "Energy"];
 
@@ -278,52 +255,68 @@ const StockTerminal: React.FC<StockTerminalProps> = ({ onBack, tradingBalance, o
             </div>
 
             <div className="rounded-3xl bg-zinc-950/80 border border-zinc-800/80 overflow-hidden shadow-2xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-900/60 text-[10px] font-black uppercase tracking-widest text-zinc-500 border-b border-zinc-800">
-                    <tr>
-                      <th className="p-4 md:p-5">Asset</th>
-                      <th className="p-4 md:p-5">Side</th>
-                      <th className="p-4 md:p-5">Shares</th>
-                      <th className="p-4 md:p-5">Execution Price</th>
-                      <th className="p-4 md:p-5">Total Cost</th>
-                      <th className="p-4 md:p-5 text-right">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-900">
-                    {orderHistory.map(order => (
-                      <tr key={order.id} className="hover:bg-zinc-900/30 transition-colors">
-                        <td className="p-4 md:p-5 flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 border border-white/10">
-                            <img src={order.company_logo_url} alt={order.ticker_symbol} className="max-h-full object-contain" />
-                          </div>
-                          <div>
-                            <span className="font-black text-white uppercase">{order.ticker_symbol}</span>
-                            <p className="text-[10px] text-zinc-500 truncate max-w-[120px]">{order.company_name}</p>
-                          </div>
-                        </td>
-                        <td className="p-4 md:p-5 font-black">
-                          <span className={`px-2 py-0.5 rounded text-[10px] ${order.side === 'BUY' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
-                            {order.side}
-                          </span>
-                        </td>
-                        <td className="p-4 md:p-5 font-mono font-bold text-white">
-                          {order.shares}
-                        </td>
-                        <td className="p-4 md:p-5 font-mono text-zinc-300">
-                          ${order.price_per_share.toFixed(2)}
-                        </td>
-                        <td className="p-4 md:p-5 font-mono font-black text-white">
-                          ${order.total_cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </td>
-                        <td className="p-4 md:p-5 text-right font-mono text-zinc-500 text-[10px]">
-                          {new Date(order.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </td>
+              {orderHistory.length === 0 ? (
+                <div className="p-12 text-center flex flex-col items-center justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4 text-zinc-500">
+                    <Layers className="w-7 h-7 text-zinc-400" />
+                  </div>
+                  <h4 className="text-sm font-black uppercase tracking-widest text-white mb-1">No Stock Orders Yet</h4>
+                  <p className="text-xs text-zinc-500 max-w-sm mb-6">Your institutional stock executions and fills will be displayed here in real time.</p>
+                  <button
+                    onClick={() => setActiveTab("market")}
+                    className="px-6 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold uppercase tracking-wider text-cyan-400 hover:text-white hover:bg-zinc-800 transition-all"
+                  >
+                    Browse Equities Market
+                  </button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-zinc-900/60 text-[10px] font-black uppercase tracking-widest text-zinc-500 border-b border-zinc-800">
+                      <tr>
+                        <th className="p-4 md:p-5">Asset</th>
+                        <th className="p-4 md:p-5">Side</th>
+                        <th className="p-4 md:p-5">Shares</th>
+                        <th className="p-4 md:p-5">Execution Price</th>
+                        <th className="p-4 md:p-5">Total Cost</th>
+                        <th className="p-4 md:p-5 text-right">Time</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-900">
+                      {orderHistory.map(order => (
+                        <tr key={order.id} className="hover:bg-zinc-900/30 transition-colors">
+                          <td className="p-4 md:p-5 flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 border border-white/10">
+                              <img src={order.company_logo_url} alt={order.ticker_symbol} className="max-h-full object-contain" />
+                            </div>
+                            <div>
+                              <span className="font-black text-white uppercase">{order.ticker_symbol}</span>
+                              <p className="text-[10px] text-zinc-500 truncate max-w-[120px]">{order.company_name}</p>
+                            </div>
+                          </td>
+                          <td className="p-4 md:p-5 font-black">
+                            <span className={`px-2 py-0.5 rounded text-[10px] ${order.side === 'BUY' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                              {order.side}
+                            </span>
+                          </td>
+                          <td className="p-4 md:p-5 font-mono font-bold text-white">
+                            {order.shares}
+                          </td>
+                          <td className="p-4 md:p-5 font-mono text-zinc-300">
+                            ${order.price_per_share.toFixed(2)}
+                          </td>
+                          <td className="p-4 md:p-5 font-mono font-black text-white">
+                            ${order.total_cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </td>
+                          <td className="p-4 md:p-5 text-right font-mono text-zinc-500 text-[10px]">
+                            {new Date(order.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}

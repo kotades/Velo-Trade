@@ -6,6 +6,7 @@ import App from './App';
 
 import { AuthProvider } from './context/AuthContext';
 import { TradeProvider } from './context/TradeContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,10 +16,12 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <TradeProvider>
-        <App />
-      </TradeProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <TradeProvider>
+          <App />
+        </TradeProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );

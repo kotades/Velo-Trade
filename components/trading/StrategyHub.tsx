@@ -24,18 +24,7 @@ const StrategyHub: React.FC<StrategyHubProps> = ({ onBack, tradingBalance, onDed
   const [allocationInput, setAllocationInput] = useState<string>("500");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [activeDeployments, setActiveDeployments] = useState<ActiveDeployment[]>([
-    {
-      id: "dep-1",
-      botId: "bot-neural-arb",
-      botName: "Neural Cross-DEX Arbitrage",
-      allocatedUsd: 1250,
-      estRoi: "14% – 28%",
-      currentProfit: 86.40,
-      status: "Running",
-      startedAt: Date.now() - 3600000 * 72
-    }
-  ]);
+  const [activeDeployments, setActiveDeployments] = useState<ActiveDeployment[]>([]);
 
   const handleOpenDeploy = (bot: StrategyBot) => {
     setSelectedBot(bot);

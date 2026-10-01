@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from '../App';
 import { TOP_STOCKS } from '../data/stocks';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Coins, Layers, Fuel } from 'lucide-react';
 
 interface MarketsProps {
   navigateTo?: (view: View) => void;
@@ -18,9 +18,9 @@ const Markets: React.FC<MarketsProps> = ({ navigateTo }) => {
   ];
 
   const commoditiesAssets = [
-    { name: 'Gold Spot', symbol: 'XAU/USD', price: '$2,785.40', change: '+0.65%', trend: 'up', icon: '🥇' },
-    { name: 'Silver Spot', symbol: 'XAG/USD', price: '$31.80', change: '-0.42%', trend: 'down', icon: '🥈' },
-    { name: 'Crude Oil', symbol: 'WTI', price: '$72.45', change: '+1.15%', trend: 'up', icon: '🛢️' },
+    { name: 'Gold Spot', symbol: 'XAU/USD', price: '$2,785.40', change: '+0.65%', trend: 'up', icon: Coins, iconColor: 'text-amber-400' },
+    { name: 'Silver Spot', symbol: 'XAG/USD', price: '$31.80', change: '-0.42%', trend: 'down', icon: Layers, iconColor: 'text-slate-300' },
+    { name: 'Crude Oil', symbol: 'WTI', price: '$72.45', change: '+1.15%', trend: 'up', icon: Fuel, iconColor: 'text-rose-400' },
   ];
 
   const handleAssetClick = () => {
@@ -70,7 +70,8 @@ const Markets: React.FC<MarketsProps> = ({ navigateTo }) => {
               </thead>
               <tbody className="divide-y divide-zinc-800/60">
                 {activeTab === 'stocks' && TOP_STOCKS.slice(0, 6).map((stock) => {
-                  const isUp = stock.change_24h_percent >= 0;
+                  const priceChange = stock.price_change_24h ?? 0;
+                  const isUp = priceChange >= 0;
                   return (
                     <tr 
                       key={stock.ticker_symbol} 
@@ -95,12 +96,12 @@ const Markets: React.FC<MarketsProps> = ({ navigateTo }) => {
                         </div>
                       </td>
                       <td className="px-6 sm:px-10 py-5 text-sm sm:text-base font-black text-white tracking-tight">
-                        ${stock.current_price.toFixed(2)}
+                        ${(stock.current_price ?? 0).toFixed(2)}
                       </td>
                       <td className={`px-6 sm:px-10 py-5 text-right font-black text-xs sm:text-sm ${isUp ? 'text-emerald-400' : 'text-rose-400'}`}>
                         <div className="flex items-center justify-end gap-1">
                           {isUp ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                          <span>{isUp ? '+' : ''}{stock.change_24h_percent.toFixed(2)}%</span>
+                          <span>{isUp ? '+' : ''}{priceChange.toFixed(2)}%</span>
                         </div>
                       </td>
                     </tr>
@@ -140,33 +141,36 @@ const Markets: React.FC<MarketsProps> = ({ navigateTo }) => {
                   </tr>
                 ))}
 
-                {activeTab === 'commodities' && commoditiesAssets.map((asset) => (
-                  <tr 
-                    key={asset.symbol} 
-                    onClick={handleAssetClick}
-                    className="hover:bg-zinc-800/40 transition-colors group cursor-pointer"
-                    title={`Trade ${asset.name} on Velo`}
-                  >
-                    <td className="px-6 sm:px-10 py-5">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <div className="w-9 h-9 rounded-xl bg-zinc-800 flex items-center justify-center text-lg shadow-md border border-zinc-700/50 shrink-0">
-                          {asset.icon}
+                {activeTab === 'commodities' && commoditiesAssets.map((asset) => {
+                  const Icon = asset.icon;
+                  return (
+                    <tr 
+                      key={asset.symbol} 
+                      onClick={handleAssetClick}
+                      className="hover:bg-zinc-800/40 transition-colors group cursor-pointer"
+                      title={`Trade ${asset.name} on Velo`}
+                    >
+                      <td className="px-6 sm:px-10 py-5">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className={`w-9 h-9 rounded-xl bg-zinc-800 flex items-center justify-center shadow-md border border-zinc-700/50 shrink-0 ${asset.iconColor}`}>
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-sm sm:text-base font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors">{asset.name}</div>
+                            <div className="text-[10px] font-bold text-zinc-400">{asset.symbol}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-sm sm:text-base font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors">{asset.name}</div>
-                          <div className="text-[10px] font-bold text-zinc-400">{asset.symbol}</div>
+                      </td>
+                      <td className="px-6 sm:px-10 py-5 text-sm sm:text-base font-black text-white tracking-tight">{asset.price}</td>
+                      <td className={`px-6 sm:px-10 py-5 text-right font-black text-xs sm:text-sm ${asset.trend === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <div className="flex items-center justify-end gap-1">
+                          {asset.trend === 'up' ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                          {asset.change}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 sm:px-10 py-5 text-sm sm:text-base font-black text-white tracking-tight">{asset.price}</td>
-                    <td className={`px-6 sm:px-10 py-5 text-right font-black text-xs sm:text-sm ${asset.trend === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      <div className="flex items-center justify-end gap-1">
-                        {asset.trend === 'up' ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                        {asset.change}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

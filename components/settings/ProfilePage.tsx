@@ -83,10 +83,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack, navigateTo }) => {
           {/* Performance Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Total Profit', value: `+$${displayData.stats.totalProfit.toFixed(2)}`, trend: '+12%', color: 'text-emerald-400' },
-              { label: 'Avg ROI', value: `${displayData.stats.roi}%`, trend: '+2.1%', color: 'text-cyan-400' },
-              { label: 'Win Rate', value: `${displayData.stats.winRate}%`, trend: 'Steady', color: 'text-indigo-400' },
-              { label: 'Total Trades', value: displayData.stats.trades, trend: 'Last 30d', color: 'text-white' },
+              { label: 'Total Profit', value: `+$${displayData.stats.totalProfit.toFixed(2)}`, trend: `${displayData.stats.roi.toFixed(1)}%`, color: 'text-emerald-400' },
+              { label: 'Avg ROI', value: `${displayData.stats.roi}%`, trend: 'Realized', color: 'text-cyan-400' },
+              { label: 'Win Rate', value: `${displayData.stats.winRate}%`, trend: 'Closed', color: 'text-indigo-400' },
+              { label: 'Total Trades', value: displayData.stats.trades, trend: 'All Time', color: 'text-white' },
             ].map((stat, i) => (
               <div key={i} className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-5 hover:border-zinc-700 transition-all">
                 <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block mb-1">{stat.label}</span>
@@ -96,30 +96,35 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack, navigateTo }) => {
             ))}
           </div>
 
-          {/* Recent Activity Placeholder */}
+          {/* Recent Activity / Milestones */}
           <section>
-            <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Recent Milestones</h3>
-            <div className="space-y-3">
-              {[
-                { title: 'Reached VIP Tier 1', date: '2 days ago', icon: Trophy, color: 'bg-amber-500/10 text-amber-500' },
-                { title: 'Portfolio ROI hit +10%', date: '1 week ago', icon: TrendingUp, color: 'bg-emerald-500/10 text-emerald-500' },
-                { title: 'Followed first Master Trader', date: '2 weeks ago', icon: Users, color: 'bg-indigo-500/10 text-indigo-500' },
-              ].map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <div key={i} className="flex items-center gap-4 p-4 bg-zinc-900/40 border border-zinc-800 rounded-2xl hover:bg-zinc-900/60 transition-all cursor-default group">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.color} border border-white/5`}>
-                      <Icon className="w-5 h-5" />
+            <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Milestones</h3>
+            {displayData.stats.trades === 0 ? (
+              <div className="p-8 rounded-2xl bg-zinc-900/40 border border-zinc-800 text-center">
+                <p className="text-xs text-zinc-500 font-medium">No trading milestones recorded yet. Start trading to earn tiered progression badges.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {[
+                  { title: `${displayData.tier} Tier Active`, date: displayData.joinDate, icon: Trophy, color: 'bg-amber-500/10 text-amber-500' },
+                  { title: `${displayData.stats.trades} Trades Logged`, date: 'Lifetime', icon: TrendingUp, color: 'bg-emerald-500/10 text-emerald-500' },
+                ].map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={i} className="flex items-center gap-4 p-4 bg-zinc-900/40 border border-zinc-800 rounded-2xl hover:bg-zinc-900/60 transition-all cursor-default group">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.color} border border-white/5`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-xs font-black text-white uppercase tracking-widest">{item.title}</h4>
+                        <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-0.5">{item.date}</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-zinc-800 group-hover:text-zinc-600 transition-colors" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-xs font-black text-white uppercase tracking-widest">{item.title}</h4>
-                      <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-0.5">{item.date}</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-800 group-hover:text-zinc-600 transition-colors" />
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </section>
 
         </div>

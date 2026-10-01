@@ -17,32 +17,7 @@ const PredictionTerminal: React.FC<PredictionTerminalProps> = ({ onBack, trading
   const [isBetModalOpen, setIsBetModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const [positions, setPositions] = useState<PredictionPosition[]>([
-    {
-      id: "pos-1",
-      marketId: 1,
-      question: "Bitcoin breaks $120,000 before End of Q4 2026?",
-      outcome: "Yes",
-      amountUsd: 100,
-      shares: 156.25,
-      avgPrice: 0.64,
-      currentPrice: 0.68,
-      isOpen: true,
-      timestamp: Date.now() - 3600000 * 12
-    },
-    {
-      id: "pos-2",
-      marketId: 3,
-      question: "US Federal Reserve cuts benchmark interest rate at next FOMC?",
-      outcome: "Yes",
-      amountUsd: 150,
-      shares: 176.47,
-      avgPrice: 0.85,
-      currentPrice: 0.89,
-      isOpen: true,
-      timestamp: Date.now() - 3600000 * 48
-    }
-  ]);
+  const [positions, setPositions] = useState<PredictionPosition[]>([]);
 
   const categories = ["All", "Crypto", "Tech", "Macro", "Politics"];
 
