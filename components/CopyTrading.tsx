@@ -1,12 +1,21 @@
 
 import React from 'react';
+import { View } from '../App';
 
-const CopyTrading: React.FC = () => {
+interface CopyTradingProps {
+  navigateTo?: (view: View) => void;
+}
+
+const CopyTrading: React.FC<CopyTradingProps> = ({ navigateTo }) => {
   const experts = [
     { name: 'Alex Rivers', roi: '+248%', risk: 'Medium', followers: '12.4k', img: 'AR' },
     { name: 'Sarah Chen', roi: '+412%', risk: 'High', followers: '8.2k', img: 'SC' },
     { name: 'Marco Velo', roi: '+124%', risk: 'Low', followers: '25.1k', img: 'MV' },
   ];
+
+  const handleAction = () => {
+    if (navigateTo) navigateTo('trading');
+  };
 
   return (
     <section id="copytrading" className="py-32 bg-[hsl(var(--color-bg))] relative overflow-hidden border-t border-[hsl(var(--color-border)/0.5)]">
@@ -23,7 +32,10 @@ const CopyTrading: React.FC = () => {
               Skip the learning curve. Follow verified experts and replicate their trades automatically in real-time with our proprietary synchronization engine.
             </p>
           </div>
-          <button className="px-10 py-5 bg-[hsl(var(--color-surface))] border border-[hsl(var(--color-border))] rounded-2xl text-xs font-black text-white uppercase tracking-[0.2em] hover:bg-white/5 transition-all shadow-xl hover:shadow-[hsl(var(--primary-500)/0.2)] group">
+          <button 
+            onClick={handleAction}
+            className="px-10 py-5 bg-[hsl(var(--color-surface))] border border-[hsl(var(--color-border))] rounded-2xl text-xs font-black text-white uppercase tracking-[0.2em] hover:bg-white/5 transition-all shadow-xl hover:shadow-[hsl(var(--primary-500)/0.2)] group outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+          >
             Become a Master <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
           </button>
         </div>
@@ -62,7 +74,10 @@ const CopyTrading: React.FC = () => {
                 </div>
               </div>
 
-              <button className="w-full py-5 rounded-2xl bg-[hsl(var(--color-surface))] text-white font-black uppercase text-xs tracking-[0.2em] group-hover:velo-gradient shadow-lg transition-all duration-300">
+              <button 
+                onClick={handleAction}
+                className="w-full py-5 rounded-2xl bg-[hsl(var(--color-surface))] text-white font-black uppercase text-xs tracking-[0.2em] group-hover:velo-gradient shadow-lg transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+              >
                 Copy Trades
               </button>
             </div>

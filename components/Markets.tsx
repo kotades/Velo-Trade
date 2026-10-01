@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { View } from '../App';
 
-const Markets: React.FC = () => {
+interface MarketsProps {
+  navigateTo?: (view: View) => void;
+}
+
+const Markets: React.FC<MarketsProps> = ({ navigateTo }) => {
   const [activeTab, setActiveTab] = useState<'crypto' | 'commodities' | 'stocks'>('crypto');
 
   const assets = {
@@ -22,6 +27,10 @@ const Markets: React.FC = () => {
     ]
   };
 
+  const handleAssetClick = () => {
+    if (navigateTo) navigateTo('trading');
+  };
+
   return (
     <section id="markets" className="py-32 bg-[hsl(var(--color-bg))] relative border-t border-[hsl(var(--color-border)/0.5)]">
       <div className="max-w-7xl mx-auto px-4">
@@ -34,7 +43,7 @@ const Markets: React.FC = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all ${
+                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                   activeTab === tab 
                   ? 'velo-gradient text-white shadow-lg' 
                   : 'text-[hsl(var(--color-text-muted))] hover:text-white hover:bg-white/5'
@@ -58,7 +67,12 @@ const Markets: React.FC = () => {
               </thead>
               <tbody>
                 {assets[activeTab].map((asset, idx) => (
-                  <tr key={idx} className="hover:bg-white/[0.03] transition-colors group cursor-pointer border-b border-[hsl(var(--color-border)/0.2)] last:border-0">
+                  <tr 
+                    key={idx} 
+                    onClick={handleAssetClick}
+                    className="hover:bg-white/[0.05] transition-colors group cursor-pointer border-b border-[hsl(var(--color-border)/0.2)] last:border-0"
+                    title={`Trade ${asset.name} on Velo`}
+                  >
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-5">
                         <div className="w-12 h-12 rounded-2xl bg-[hsl(var(--color-bg))] border border-[hsl(var(--color-border))] flex items-center justify-center font-black text-[hsl(var(--color-text-muted))] group-hover:text-[hsl(var(--secondary-400))] group-hover:border-[hsl(var(--secondary-400)/0.5)] transition-all duration-300">
@@ -83,7 +97,12 @@ const Markets: React.FC = () => {
             </table>
           </div>
           <div className="p-8 bg-[hsl(var(--color-surface)/0.5)] border-t border-[hsl(var(--color-border)/0.5)] text-center">
-             <button className="text-sm font-black text-[hsl(var(--primary-400))] hover:text-white transition-colors uppercase tracking-[0.2em]">View All Assets →</button>
+             <button 
+               onClick={handleAssetClick}
+               className="text-sm font-black text-[hsl(var(--primary-400))] hover:text-white transition-colors uppercase tracking-[0.2em] outline-none focus-visible:underline"
+             >
+               View All Assets in Terminal →
+             </button>
           </div>
         </div>
       </div>

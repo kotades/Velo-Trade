@@ -31,7 +31,7 @@ const Instruments: React.FC<InstrumentsProps> = ({ navigateTo }) => {
             </p>
           </div>
           <button 
-            onClick={() => navigateTo('register')}
+            onClick={() => navigateTo('trading')}
             className="group flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-[hsl(var(--secondary-500))] hover:text-white transition-all duration-300"
           >
             View Full Asset List
@@ -79,7 +79,7 @@ const Instruments: React.FC<InstrumentsProps> = ({ navigateTo }) => {
                   <span className="text-3xl font-black text-white tracking-tighter leading-none">{asset.price}</span>
                 </div>
                 <button 
-                  onClick={() => navigateTo('register')}
+                  onClick={() => navigateTo('trading')}
                   className={`px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all duration-300 border ${
                     asset.trend === 'up' 
                     ? 'bg-white/5 text-white border-white/10 hover:bg-[hsl(var(--success))] hover:border-transparent hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]' 

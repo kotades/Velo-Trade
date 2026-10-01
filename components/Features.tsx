@@ -1,45 +1,30 @@
 import React from 'react';
+import { Flame, Users, ArrowDownToLine, Coins, ArrowRight } from 'lucide-react';
 
 const Features: React.FC = () => {
   const features = [
     {
       title: "Industry-Leading Zero Fees",
       description: "Keep 100% of your gains. Our platform is built to provide free access to the most lucrative crypto markets with no hidden commissions.",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.5-7 3 3 3 6 1 9 2-2 5-3 5-3s0 3-2 5z" />
-        </svg>
-      ),
+      icon: <Flame className="w-6 h-6" />,
       color: "hsl(var(--warning))"
     },
     {
       title: "Elite Copy-Trading Engine",
       description: "Don't know how to trade? Simply select one of our top-performing experts and automatically replicate their winning strategies in real-time.",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
+      icon: <Users className="w-6 h-6" />,
       color: "hsl(var(--primary-500))"
     },
     {
       title: "No Fees on Deposit",
       description: "We believe in accessible trading for everyone, everywhere. That's why we have completely waived all fees on your crypto deposits.",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-        </svg>
-      ),
+      icon: <ArrowDownToLine className="w-6 h-6" />,
       color: "hsl(var(--secondary-500))"
     },
     {
       title: "No Minimum Account Size",
       description: "Unlike traditional brokers requiring thousands of dollars, Velo has zero minimums. Start your wealth-building journey with any amount.",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <Coins className="w-6 h-6" />,
       color: "hsl(var(--success))"
     }
   ];
@@ -88,9 +73,7 @@ const Features: React.FC = () => {
 
               {/* Decorative accent */}
               <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
-                 <svg className="w-6 h-6 text-[hsl(var(--primary-500)/0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                 </svg>
+                <ArrowRight className="w-6 h-6 text-[hsl(var(--primary-500)/0.5)]" />
               </div>
             </div>
           ))}

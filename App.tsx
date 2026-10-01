@@ -98,10 +98,10 @@ const App: React.FC = () => {
             <Stats />
             <Features />
             <HowItWorks />
-            <Markets />
-            <CopyTrading />
+            <Markets navigateTo={navigateTo} />
+            <CopyTrading navigateTo={navigateTo} />
             <Instruments navigateTo={navigateTo} />
-            <Education />
+            <Education navigateTo={navigateTo} />
           </>
         )}
 
@@ -114,7 +114,7 @@ const App: React.FC = () => {
         )}
 
         {currentView === 'faq' && (
-          <FAQ />
+          <FAQ navigateTo={navigateTo} />
         )}
 
         {currentView === 'terms' && (

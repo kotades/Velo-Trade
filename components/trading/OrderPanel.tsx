@@ -177,6 +177,24 @@ const OrderPanel: React.FC<OrderPanelProps> = ({
             </div>
           </div>
 
+          {/* Quick Amount Chips */}
+          <div className="flex items-center gap-1.5 w-full max-w-lg justify-between">
+            {[10, 25, 50, 100, 250, 500].map(amt => (
+              <button
+                key={amt}
+                type="button"
+                onClick={() => setInvestment(amt)}
+                className={`flex-1 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all outline-none focus-visible:ring-1 focus-visible:ring-cyan-500 ${
+                  investment === amt 
+                    ? 'bg-zinc-800 text-cyan-400 border border-cyan-500/30 shadow-sm' 
+                    : 'bg-zinc-900/60 text-zinc-500 hover:text-zinc-300 border border-zinc-800/60'
+                }`}
+              >
+                ${amt}
+              </button>
+            ))}
+          </div>
+
           {/* Leverage Selector */}
           <div className="w-full max-w-lg">
             <div className="flex items-center justify-between mb-1 px-1">
@@ -296,22 +314,34 @@ const OrderPanel: React.FC<OrderPanelProps> = ({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-2 w-full max-w-lg h-8">
+        <div className="flex items-center gap-2 w-full max-w-lg h-9">
           <button 
             onClick={(e) => { e.stopPropagation(); handleTrade('sell'); }} 
+            disabled={isPlacing || currentPrice === 0}
             aria-label={`Quick sell ${symbol} at market price`}
-            className="flex-1 h-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-rose-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 outline-none focus-visible:ring-1 focus-visible:ring-rose-500"
+            className="flex-1 h-full bg-gradient-to-r from-rose-600/30 to-rose-500/20 hover:from-rose-600/40 hover:to-rose-500/30 text-rose-400 rounded-xl text-[10px] font-black uppercase tracking-wider border border-rose-500/40 active:scale-95 transition-all flex items-center justify-center gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-rose-500 shadow-sm"
           >
-            <ArrowDown className="w-3 h-3" />
+            {isPlacing ? (
+              <div className="w-3 h-3 border-2 border-rose-400/40 border-t-rose-400 rounded-full animate-spin" />
+            ) : (
+              <ArrowDown className="w-3.5 h-3.5" />
+            )}
             <span>Sell Market</span>
+            <span className="text-[8px] px-1 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold ml-1">+85%</span>
           </button>
           <button 
             onClick={(e) => { e.stopPropagation(); handleTrade('buy'); }} 
+            disabled={isPlacing || currentPrice === 0}
             aria-label={`Quick buy ${symbol} at market price`}
-            className="flex-1 h-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-emerald-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5 outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+            className="flex-1 h-full bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 hover:from-emerald-600/40 hover:to-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-wider border border-emerald-500/40 active:scale-95 transition-all flex items-center justify-center gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shadow-sm"
           >
-            <ArrowUp className="w-3 h-3" />
+            {isPlacing ? (
+              <div className="w-3 h-3 border-2 border-emerald-400/40 border-t-emerald-400 rounded-full animate-spin" />
+            ) : (
+              <ArrowUp className="w-3.5 h-3.5" />
+            )}
             <span>Buy Market</span>
+            <span className="text-[8px] px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold ml-1">+85%</span>
           </button>
         </div>
       )}

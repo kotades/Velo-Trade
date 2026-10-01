@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { View } from '../App';
 
-const FAQ: React.FC = () => {
+interface FAQProps {
+  navigateTo?: (view: View) => void;
+}
+
+const FAQ: React.FC<FAQProps> = ({ navigateTo }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -104,11 +109,17 @@ const FAQ: React.FC = () => {
               Our expert support team is available 24/7 via live chat and email to assist you with your trading journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-10 py-5 bg-white text-black font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/10">
+              <a 
+                href="mailto:support@velo-trade.com"
+                className="px-10 py-5 bg-white text-black font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/10 inline-flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              >
                 Contact Support
-              </button>
-              <button className="px-10 py-5 bg-[hsl(var(--color-surface))] text-white border border-[hsl(var(--color-border))] font-black uppercase tracking-widest text-sm rounded-2xl hover:bg-white/5 active:scale-95 transition-all">
-                Read Documentation
+              </a>
+              <button 
+                onClick={() => navigateTo && navigateTo('trading')}
+                className="px-10 py-5 bg-[hsl(var(--color-surface))] text-white border border-[hsl(var(--color-border))] font-black uppercase tracking-widest text-sm rounded-2xl hover:bg-white/5 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+              >
+                Launch Terminal
               </button>
             </div>
           </div>

@@ -1,12 +1,21 @@
 
 import React from 'react';
+import { View } from '../App';
 
-const Education: React.FC = () => {
+interface EducationProps {
+  navigateTo?: (view: View) => void;
+}
+
+const Education: React.FC<EducationProps> = ({ navigateTo }) => {
   const topics = [
     { title: 'Crypto Basics', duration: '15 mins', category: 'Beginner', color: 'primary' },
     { title: 'Copy Trading 101', duration: '25 mins', category: 'Intermediate', color: 'secondary' },
     { title: 'Risk Management', duration: '20 mins', category: 'Essential', color: 'success' },
   ];
+
+  const handleLessonStart = () => {
+    if (navigateTo) navigateTo('faq');
+  };
 
   return (
     <section id="education" className="py-32 bg-[hsl(var(--color-bg))] relative border-t border-[hsl(var(--color-border)/0.5)]">
@@ -38,7 +47,10 @@ const Education: React.FC = () => {
                 </span>
                 <h3 className="text-3xl font-black text-white uppercase italic mb-4 tracking-tight group-hover:velo-text-gradient transition-all">{topic.title}</h3>
                 <p className="text-[hsl(var(--color-text-muted))] text-base mb-8 leading-relaxed">Master the art of {topic.title.toLowerCase()} in just {topic.duration} with expert insights.</p>
-                <button className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-[hsl(var(--secondary-400))] group-hover:text-white transition-all group/btn">
+                <button 
+                  onClick={handleLessonStart}
+                  className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-[hsl(var(--secondary-400))] group-hover:text-white transition-all group/btn outline-none focus-visible:underline"
+                >
                   Start Lesson
                   <svg className="w-5 h-5 transition-transform group-hover/btn:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />

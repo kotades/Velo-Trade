@@ -4,6 +4,7 @@ import { TradingPair } from './AssetSelector';
 import { Trade } from '../../hooks/useTrades';
 import { User } from 'firebase/auth';
 import ActiveTradeStatus from './ActiveTradeStatus';
+import { ChevronDown, Plus, Layers, Wallet, Check } from 'lucide-react';
 
 interface TradingHeaderProps {
   navigateTo: (view: View) => void;
@@ -24,8 +25,6 @@ interface TradingHeaderProps {
   setActiveSideTab: (tab: string) => void;
   setWalletTab: (tab: 'overview' | 'deposit') => void;
 }
-
-// ActiveTradeStatus is imported from separate file
 
 const TradingHeader: React.FC<TradingHeaderProps> = ({
   navigateTo,
@@ -71,141 +70,159 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
   }, [isAccountDropdownOpen, setIsAccountDropdownOpen]);
 
   return (
-    <header className="h-14 md:h-16 border-b border-[hsl(var(--color-border))] flex items-center justify-between px-3 md:px-4 z-30 bg-[hsl(var(--color-bg)/0.9)] backdrop-blur-2xl shrink-0">
-      <div className="flex items-center gap-3 md:gap-6">
+    <header className="h-14 md:h-16 border-b border-zinc-800/80 flex items-center justify-between px-2 sm:px-4 z-30 bg-zinc-950/90 backdrop-blur-2xl shrink-0">
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-6 min-w-0">
+        {/* Brand Home Button */}
         <button 
           aria-label="Go to Home"
           onClick={() => navigateTo('home')} 
-          className="flex items-center gap-2 group outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary-500))] rounded-lg p-1"
+          className="flex items-center gap-2 group outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg p-1 shrink-0 active:scale-95 transition-transform"
         >
-          <div className="w-7 h-7 md:w-8 md:h-8 velo-gradient rounded-lg flex items-center justify-center">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 velo-gradient rounded-lg flex items-center justify-center shadow-md shadow-indigo-500/20 border border-white/20">
             <span className="text-white font-black text-xs md:text-sm italic">V</span>
           </div>
-          <span className="text-lg md:text-xl font-black italic text-white hidden sm:block">VELO<span className="text-[hsl(var(--secondary-500))]">.</span></span>
+          <span className="text-lg md:text-xl font-black italic text-white hidden sm:block">VELO<span className="text-cyan-400">.</span></span>
         </button>
 
-        <div className="h-8 w-px bg-zinc-900 hidden sm:block" />
+        <div className="h-6 w-px bg-zinc-800 hidden sm:block" />
 
+        {/* Pair Selector Pill */}
         <button 
           aria-label={`Select Trading Pair, currently ${selectedPair.displayName}`}
           onClick={() => setAssetSelectorOpen(true)} 
-          className="flex items-center gap-2 md:gap-3 hover:bg-[hsl(var(--color-surface)/0.5)] px-2 py-1.5 rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--secondary-500))]"
+          className="flex items-center gap-2 hover:bg-zinc-900/80 bg-zinc-900/40 border border-zinc-800/80 px-2 sm:px-3 py-1.5 rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-98"
         >
-          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#f7931a] flex items-center justify-center text-white font-black text-[10px] md:text-xs">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center text-zinc-950 font-black text-[10px] sm:text-xs shrink-0 shadow-sm">
             {selectedPair.icon}
           </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] md:text-xs font-black text-white uppercase leading-none">{selectedPair.displayName}</span>
-            <span className={`text-[9px] md:text-[10px] font-bold uppercase tracking-widest leading-none mt-0.5 ${priceUp ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger))]'}`}>
-              {priceUp ? '▲' : '▼'} {ticker.priceChangePercent24h.toFixed(2)}%
+          <div className="flex flex-col text-left">
+            <span className="text-[10px] sm:text-xs font-black text-white uppercase leading-none tracking-tight">{selectedPair.displayName}</span>
+            <span className={`text-[8px] sm:text-[9px] font-bold uppercase tracking-wider leading-none mt-1 ${priceUp ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {priceUp ? '+' : ''}{ticker.priceChangePercent24h.toFixed(2)}%
             </span>
           </div>
-          <svg className="w-3 h-3 text-zinc-600 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+          <ChevronDown className="w-3 h-3 text-zinc-500 ml-0.5" />
         </button>
 
-        <div className="h-8 w-px bg-zinc-900 hidden lg:block" />
+        <div className="h-6 w-px bg-zinc-800 hidden lg:block" />
 
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Desktop Ticker Bar */}
+        <div className="hidden lg:flex items-center gap-6 text-left">
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Price</span>
-            <span className={`text-sm font-black leading-none ${priceUp ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger))]'}`}>${formatPrice(ticker.currentPrice)}</span>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest leading-none">Mark Price</span>
+            <span className={`text-sm font-black leading-none mt-1 ${priceUp ? 'text-emerald-400' : 'text-rose-400'}`}>${formatPrice(ticker.currentPrice)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">24h High</span>
-            <span className="text-sm font-black text-white leading-none">${formatPrice(ticker.high24h)}</span>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest leading-none">24h High</span>
+            <span className="text-sm font-black text-white leading-none mt-1">${formatPrice(ticker.high24h)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">24h Low</span>
-            <span className="text-sm font-black text-white leading-none">${formatPrice(ticker.low24h)}</span>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest leading-none">24h Low</span>
+            <span className="text-sm font-black text-white leading-none mt-1">${formatPrice(ticker.low24h)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Vol</span>
-            <span className="text-sm font-black text-white leading-none">{formatVolume(ticker.volume24h)}</span>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest leading-none">24h Volume</span>
+            <span className="text-sm font-black text-zinc-300 leading-none mt-1">{formatVolume(ticker.volume24h)} BTC</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 md:gap-4">
-        <div className="flex items-center gap-1.5 md:gap-2">
-          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-[hsl(var(--success))] shadow-lg shadow-emerald-500/50' : 'bg-[hsl(var(--danger))] shadow-lg shadow-rose-500/50'}`} />
-          <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest hidden sm:block">
-            {isConnected ? 'Live' : 'Offline'}
+      {/* Right Controls: Account, Deposit, Depth Toggle */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Live Feed Status Dot */}
+        <div className="hidden xs:flex items-center gap-1.5 px-2 py-1 rounded-full bg-zinc-900/60 border border-zinc-800">
+          <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+          <span className="text-[8px] font-black text-zinc-400 uppercase tracking-wider hidden sm:block">
+            {isConnected ? '1s Live' : 'Reconnecting'}
           </span>
         </div>
+
         <ActiveTradeStatus trades={trades} />
 
-        <div className="flex flex-col items-end mr-2 relative">
+        {/* Account Switcher Pill */}
+        <div className="relative">
           <button 
             aria-haspopup="listbox"
             aria-expanded={isAccountDropdownOpen}
             aria-label={`Switch account, current: ${accountType} account, balance: ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
             onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-            className="flex flex-col items-end hover:bg-[hsl(var(--color-surface)/0.5)] px-2 py-1 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--secondary-500))]"
+            className="flex flex-col items-end hover:bg-zinc-900/80 bg-zinc-900/40 border border-zinc-800/80 px-2 sm:px-3 py-1 rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-98"
           >
             <div className="flex items-center gap-1">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-none">{accountType} Account</span>
-              <svg className={`w-2 h-2 text-zinc-600 transition-transform ${isAccountDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+              <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-wider leading-none ${accountType === 'demo' ? 'text-amber-400' : 'text-cyan-400'}`}>
+                {accountType}
+              </span>
+              <ChevronDown className={`w-2.5 h-2.5 text-zinc-500 transition-transform ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
             </div>
-            <span className="text-sm md:text-lg font-black text-white leading-none">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+            <span className="text-xs sm:text-base font-black text-white leading-none mt-1">
+              ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
           </button>
 
           {isAccountDropdownOpen && (
-            <div role="listbox" className="absolute top-full right-0 mt-2 w-48 bg-[hsl(var(--color-surface))] border border-[hsl(var(--color-border))] rounded-xl shadow-2xl z-50 overflow-hidden py-1">
+            <div role="listbox" className="absolute top-full right-0 mt-2 w-52 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-50 overflow-hidden py-1.5 backdrop-blur-2xl">
+              <div className="px-3 py-1.5 text-[8px] font-black uppercase tracking-widest text-zinc-500 border-b border-zinc-800">
+                Trading Balance Mode
+              </div>
               <button 
                 role="option"
                 aria-selected={accountType === 'demo'}
                 onClick={() => { setAccountType('demo'); setIsAccountDropdownOpen(false); }}
-                className={`w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-zinc-800 transition-all ${accountType === 'demo' ? 'bg-zinc-800/50' : ''}`}
+                className={`w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-zinc-800/60 transition-all ${accountType === 'demo' ? 'bg-zinc-800/80' : ''}`}
               >
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest">Demo Account</span>
-                  <span className="text-[9px] font-medium text-zinc-500">${(userData?.demoBalance ?? 10000).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Demo Account</span>
+                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">${(userData?.demoBalance ?? 10000).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
                 </div>
-                {accountType === 'demo' && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--secondary-500))]" />}
+                {accountType === 'demo' && <Check className="w-3.5 h-3.5 text-amber-400" />}
               </button>
-              <div className="h-px bg-[hsl(var(--color-border))]" />
+              <div className="h-px bg-zinc-800/80" />
               <button 
                 role="option"
                 aria-selected={accountType === 'real'}
                 onClick={() => { setAccountType('real'); setIsAccountDropdownOpen(false); }}
-                className={`w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-zinc-800 transition-all ${accountType === 'real' ? 'bg-zinc-800/50' : ''}`}
+                className={`w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-zinc-800/60 transition-all ${accountType === 'real' ? 'bg-zinc-800/80' : ''}`}
               >
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest">Real Account</span>
-                  <span className="text-[9px] font-medium text-zinc-500">${(userData?.realBalance ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
+                  <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider">Real Account</span>
+                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">${(userData?.realBalance ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
                 </div>
-                {accountType === 'real' && <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--secondary-500))]" />}
+                {accountType === 'real' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
               </button>
             </div>
           )}
         </div>
 
+        {/* Fast Deposit CTA Button */}
         <button 
           onClick={() => {
             setActiveSideTab('finances');
             setWalletTab('deposit');
           }}
-          className="px-3 sm:px-4 md:px-6 py-2 md:py-2.5 velo-gradient rounded-xl text-[10px] md:text-xs font-black text-white uppercase tracking-widest shadow-lg shadow-indigo-500/20 border border-white/10 hover:scale-105 active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-[hsl(var(--secondary-500))] outline-none"
+          className="px-2.5 sm:px-4 md:px-5 py-2 sm:py-2.5 velo-gradient rounded-xl text-[10px] sm:text-xs font-black text-white uppercase tracking-wider shadow-lg shadow-indigo-500/25 border border-white/20 hover:scale-105 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 flex items-center gap-1.5"
         >
-          <span className="sm:hidden">+$</span>
+          <Plus className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Deposit</span>
         </button>
 
+        {/* Toggle Level 2 Depth / Info Panel */}
         <button
           onClick={() => setRightPanelOpen(prev => !prev)}
-          className={`flex items-center gap-2 px-3 h-9 md:h-10 rounded-xl border transition-all outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--secondary-500))] ${rightPanelOpen ? 'bg-indigo-500/20 border-indigo-500 text-indigo-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-white'}`}
+          aria-label="Toggle Order Book and Market Depth"
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 h-8 sm:h-9 md:h-10 rounded-xl border transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-95 ${rightPanelOpen ? 'bg-indigo-500/20 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-500/20' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'}`}
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" /></svg>
-          <span className="text-[10px] font-black uppercase tracking-widest hidden lg:block">Orders/Info</span>
+          <Layers className="w-4 h-4 sm:w-4 sm:h-4" />
+          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest hidden xl:block">Depth Book</span>
         </button>
 
+        {/* Profile Circle */}
         <button 
           onClick={() => setActiveSideTab('profile')}
-          className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center group cursor-pointer overflow-hidden hidden sm:flex outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--secondary-500))]"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center cursor-pointer overflow-hidden hidden sm:flex outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 hover:border-zinc-700 transition-all active:scale-95"
           aria-label="Go to Profile"
         >
-          <div className="w-full h-full velo-gradient flex items-center justify-center font-black text-white text-sm">
-            {(userData?.displayName || user?.displayName || 'V').charAt(0)}
+          <div className="w-full h-full velo-gradient flex items-center justify-center font-black text-white text-xs sm:text-sm">
+            {(userData?.displayName || user?.displayName || user?.email || 'V').charAt(0).toUpperCase()}
           </div>
         </button>
       </div>

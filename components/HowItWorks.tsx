@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { UserCheck, Wallet, TrendingUp, ArrowDown } from 'lucide-react';
 
 const HowItWorks: React.FC = () => {
   const steps = [
@@ -7,31 +8,19 @@ const HowItWorks: React.FC = () => {
       number: "01",
       title: "Enter Details",
       description: "Fill in your personal details in our secure, encrypted online application. It takes less than 5 minutes.",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      )
+      icon: <UserCheck className="w-8 h-8" />
     },
     {
       number: "02",
       title: "Connect Wallet",
       description: "Link your favorite Web3 wallet (MetaMask, Phantom, or Trust) to securely manage your assets and trade.",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-        </svg>
-      )
+      icon: <Wallet className="w-8 h-8" />
     },
     {
       number: "03",
       title: "Start Trading",
       description: "Choose a top-tier expert to copy or trade 250+ instruments manually with zero fees.",
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
-      )
+      icon: <TrendingUp className="w-8 h-8" />
     }
   ];
 
@@ -91,9 +80,7 @@ const HowItWorks: React.FC = () => {
 
         <div className="mt-32 text-center">
           <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-[hsl(var(--primary-500)/0.05)] border border-[hsl(var(--primary-500)/0.1)] text-[hsl(var(--primary-400))] text-sm font-black uppercase tracking-[0.2em] anim-shake">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+            <ArrowDown className="w-5 h-5" />
             Scroll to see instruments
           </div>
         </div>
