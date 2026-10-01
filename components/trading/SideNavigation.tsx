@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { BarChart2, Wallet, Users, Settings, LogOut } from 'lucide-react';
+import { BarChart2, TrendingUp, Scale, Bot, Wallet, Users, Settings, LogOut } from 'lucide-react';
 
 interface SideNavigationProps {
   activeSideTab: string;
@@ -11,8 +11,11 @@ interface SideNavigationProps {
 
 const SIDE_TABS = [
   { id: 'trade', label: 'Trade', icon: BarChart2 },
-  { id: 'wallet', label: 'Wallet', icon: Wallet },
+  { id: 'stocks', label: 'Stocks', icon: TrendingUp },
+  { id: 'predictions', label: 'Predict', icon: Scale },
+  { id: 'strategies', label: 'Bots', icon: Bot },
   { id: 'social', label: 'Social', icon: Users },
+  { id: 'wallet', label: 'Wallet', icon: Wallet },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

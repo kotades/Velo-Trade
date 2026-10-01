@@ -1,34 +1,38 @@
 import React from 'react';
-import { TrendingUp, Users, Layers, MoreHorizontal } from 'lucide-react';
+import { BarChart2, TrendingUp, Scale, Bot, Users, Wallet } from 'lucide-react';
 
-export type MobileTab = 'trade' | 'social' | 'positions' | 'more';
+export type MobileTab = 'trade' | 'stocks' | 'predictions' | 'strategies' | 'social' | 'wallet' | 'finances' | 'positions' | 'more';
 
 interface MobileTradeNavProps {
-  activeTab: MobileTab;
-  onTabChange: (tab: MobileTab) => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
-const tabs: { id: MobileTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: 'trade', label: 'Terminal', icon: TrendingUp },
+const tabs = [
+  { id: 'trade', label: 'Terminal', icon: BarChart2 },
+  { id: 'stocks', label: 'Stocks', icon: TrendingUp },
+  { id: 'predictions', label: 'Predict', icon: Scale },
+  { id: 'strategies', label: 'Bots', icon: Bot },
   { id: 'social', label: 'Copy Hub', icon: Users },
-  { id: 'positions', label: 'Ledger', icon: Layers },
-  { id: 'more', label: 'More', icon: MoreHorizontal },
+  { id: 'wallet', label: 'Wallet', icon: Wallet },
 ];
 
 const MobileTradeNav: React.FC<MobileTradeNavProps> = ({ activeTab, onTabChange }) => {
+  const normalizedActive = activeTab === 'finances' ? 'wallet' : activeTab;
+
   return (
-    <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-2xl border-t border-zinc-800/80 safe-area-bottom shadow-2xl">
-      <div className="flex items-center justify-around h-14 px-2" role="tablist">
+    <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur-2xl border-t border-zinc-800/80 pb-safe shadow-2xl">
+      <div className="flex items-center justify-around overflow-x-auto no-scrollbar px-1 h-14" role="tablist">
         {tabs.map(tab => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
+          const isActive = normalizedActive === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               role="tab"
               aria-selected={isActive}
-              className={`relative flex flex-col items-center justify-center flex-1 h-full py-1 rounded-xl transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-90 ${
+              className={`relative flex flex-col items-center justify-center flex-1 min-w-[52px] h-full py-1 px-1 rounded-xl transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-90 shrink-0 ${
                 isActive
                   ? 'text-cyan-400 font-black'
                   : 'text-zinc-500 hover:text-zinc-300 active:text-zinc-200 font-bold'
@@ -41,7 +45,7 @@ const MobileTradeNav: React.FC<MobileTradeNavProps> = ({ activeTab, onTabChange 
               <div className={`p-1 rounded-lg transition-transform ${isActive ? 'scale-110' : ''}`}>
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="text-[8px] uppercase tracking-widest leading-none mt-0.5">{tab.label}</span>
+              <span className="text-[8px] uppercase tracking-wider leading-none mt-0.5 whitespace-nowrap">{tab.label}</span>
             </button>
           );
         })}

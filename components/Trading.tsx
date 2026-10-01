@@ -15,6 +15,9 @@ import { useGhostEngine } from '../hooks/useGhostTraders';
 import TradingHeader from './trading/TradingHeader';
 import SideNavigation from './trading/SideNavigation';
 import TerminalView from './trading/TerminalView';
+import StockTerminal from './trading/StockTerminal';
+import PredictionTerminal from './trading/PredictionTerminal';
+import StrategyHub from './trading/StrategyHub';
 import { BookOpen } from 'lucide-react';
 
 interface TradingProps {
@@ -42,7 +45,25 @@ const Trading: React.FC<TradingProps> = ({ navigateTo }) => {
   useGhostEngine(); 
   
   const [accountType, setAccountType] = useState<'demo' | 'real'>('demo');
-  const balance = accountType === 'demo' ? (userData?.demoBalance ?? 10000) : (userData?.realBalance ?? 0);
+  const [mainBalance, setMainBalance] = useState<number>(2500);
+  const [tradingBalanceOffset, setTradingBalanceOffset] = useState<number>(0);
+  
+  const baseBalance = accountType === 'demo' ? (userData?.demoBalance ?? 10000) : (userData?.realBalance ?? 0);
+  const effectiveTradingBalance = Math.max(0, baseBalance + tradingBalanceOffset);
+
+  const handleTransferFunds = (from: 'main' | 'trading', to: 'main' | 'trading', amount: number) => {
+    if (from === 'main') {
+      setMainBalance(prev => Math.max(0, prev - amount));
+      setTradingBalanceOffset(prev => prev + amount);
+    } else {
+      setMainBalance(prev => prev + amount);
+      setTradingBalanceOffset(prev => prev - amount);
+    }
+  };
+
+  const handleDeductBalance = (amount: number) => {
+    setTradingBalanceOffset(prev => prev - amount);
+  };
   
   const [walletTab, setWalletTab] = useState<'overview' | 'deposit'>('overview');
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
@@ -83,7 +104,10 @@ const Trading: React.FC<TradingProps> = ({ navigateTo }) => {
         setIsAccountDropdownOpen={setIsAccountDropdownOpen}
         accountType={accountType}
         setAccountType={setAccountType}
-        balance={balance}
+        balance={effectiveTradingBalance}
+        mainBalance={mainBalance}
+        tradingBalance={effectiveTradingBalance}
+        onTransferFunds={handleTransferFunds}
         userData={userData}
         user={user}
         rightPanelOpen={rightPanelOpen}
@@ -129,7 +153,31 @@ const Trading: React.FC<TradingProps> = ({ navigateTo }) => {
             />
           )}
 
-          {activeSideTab === 'finances' && (
+          {activeSideTab === 'stocks' && (
+            <StockTerminal 
+              onBack={() => setActiveSideTab('trade')} 
+              tradingBalance={effectiveTradingBalance} 
+              onDeductBalance={handleDeductBalance} 
+            />
+          )}
+
+          {activeSideTab === 'predictions' && (
+            <PredictionTerminal 
+              onBack={() => setActiveSideTab('trade')} 
+              tradingBalance={effectiveTradingBalance} 
+              onDeductBalance={handleDeductBalance} 
+            />
+          )}
+
+          {activeSideTab === 'strategies' && (
+            <StrategyHub 
+              onBack={() => setActiveSideTab('trade')} 
+              tradingBalance={effectiveTradingBalance} 
+              onDeductBalance={handleDeductBalance} 
+            />
+          )}
+
+          {(activeSideTab === 'finances' || activeSideTab === 'wallet') && (
             <WalletDashboard onBack={() => setActiveSideTab('trade')} initialTab={walletTab as any} userData={userData} />
           )}
 
@@ -169,9 +217,18 @@ const Trading: React.FC<TradingProps> = ({ navigateTo }) => {
         <RightPanel ticker={ticker} symbol={selectedPair.symbol} isOpen={rightPanelOpen} onToggle={() => setRightPanelOpen(false)} />
       </div>
 
-      {activeSideTab === 'trade' && (
-        <MobileTradeNav activeTab={mobileTab} onTabChange={setMobileTab} />
-      )}
+      <MobileTradeNav 
+        activeTab={activeSideTab === 'finances' ? 'wallet' : activeSideTab} 
+        onTabChange={(tab) => {
+          if (tab === 'wallet') {
+            setActiveSideTab('wallet');
+            setWalletTab('overview');
+          } else {
+            setActiveSideTab(tab);
+          }
+          setMobileTab(tab as any);
+        }} 
+      />
 
       <div className="h-14 md:hidden shrink-0" />
     </div>

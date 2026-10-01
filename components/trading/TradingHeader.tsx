@@ -4,7 +4,8 @@ import { TradingPair } from './AssetSelector';
 import { Trade } from '../../hooks/useTrades';
 import { User } from 'firebase/auth';
 import ActiveTradeStatus from './ActiveTradeStatus';
-import { ChevronDown, Plus, Layers, Wallet, Check } from 'lucide-react';
+import { ChevronDown, Plus, Layers, Wallet, Check, Eye, EyeOff, ArrowRightLeft } from 'lucide-react';
+import FundTransferModal from './FundTransferModal';
 
 interface TradingHeaderProps {
   navigateTo: (view: View) => void;
@@ -24,6 +25,9 @@ interface TradingHeaderProps {
   setRightPanelOpen: (open: (prev: boolean) => boolean) => void;
   setActiveSideTab: (tab: string) => void;
   setWalletTab: (tab: 'overview' | 'deposit') => void;
+  mainBalance?: number;
+  tradingBalance?: number;
+  onTransferFunds?: (from: 'main' | 'trading', to: 'main' | 'trading', amount: number) => void;
 }
 
 const TradingHeader: React.FC<TradingHeaderProps> = ({
@@ -43,8 +47,14 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
   rightPanelOpen,
   setRightPanelOpen,
   setActiveSideTab,
-  setWalletTab
+  setWalletTab,
+  mainBalance = 2500,
+  tradingBalance,
+  onTransferFunds
 }) => {
+  const [isBalanceHidden, setIsBalanceHidden] = React.useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = React.useState(false);
+  const effectiveTradingBalance = tradingBalance !== undefined ? tradingBalance : balance;
   const priceUp = ticker.priceChangePercent24h >= 0;
 
   const formatPrice = (p: number) => {
@@ -139,6 +149,27 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
 
         <ActiveTradeStatus trades={trades} />
 
+        {/* Balance Privacy Eye Toggle */}
+        <button
+          aria-label={isBalanceHidden ? "Reveal balance" : "Hide balance"}
+          onClick={() => setIsBalanceHidden(!isBalanceHidden)}
+          className="p-1.5 sm:p-2 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 text-zinc-400 hover:text-white transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-95"
+          title={isBalanceHidden ? "Show balance" : "Hide balance"}
+        >
+          {isBalanceHidden ? <EyeOff className="w-3.5 h-3.5 text-zinc-400" /> : <Eye className="w-3.5 h-3.5 text-zinc-400" />}
+        </button>
+
+        {/* Transfer Funds Modal Quick CTA (M-Shot Broker Feature) */}
+        <button
+          aria-label="Transfer funds between Main and Trading balance"
+          onClick={() => setIsTransferModalOpen(true)}
+          className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 text-zinc-300 hover:text-white transition-all text-xs font-bold outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-95"
+          title="Transfer funds between Main and Trading balances"
+        >
+          <ArrowRightLeft className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="hidden md:inline text-[9px] uppercase font-black tracking-wider">Transfer</span>
+        </button>
+
         {/* Account Switcher Pill */}
         <div className="relative">
           <button 
@@ -155,7 +186,7 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
               <ChevronDown className={`w-2.5 h-2.5 text-zinc-500 transition-transform ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
             </div>
             <span className="text-xs sm:text-base font-black text-white leading-none mt-1">
-              ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {isBalanceHidden ? "$••••••" : `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
             </span>
           </button>
 
@@ -172,7 +203,9 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
               >
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Demo Account</span>
-                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">${(userData?.demoBalance ?? 10000).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
+                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">
+                    {isBalanceHidden ? "$••••••" : `$${(userData?.demoBalance ?? 10000).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} Available
+                  </span>
                 </div>
                 {accountType === 'demo' && <Check className="w-3.5 h-3.5 text-amber-400" />}
               </button>
@@ -185,7 +218,9 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
               >
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider">Real Account</span>
-                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">${(userData?.realBalance ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} Available</span>
+                  <span className="text-[9px] font-semibold text-zinc-400 mt-0.5">
+                    {isBalanceHidden ? "$••••••" : `$${(userData?.realBalance ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} Available
+                  </span>
                 </div>
                 {accountType === 'real' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
               </button>
@@ -226,6 +261,19 @@ const TradingHeader: React.FC<TradingHeaderProps> = ({
           </div>
         </button>
       </div>
+
+      {/* M-Shot Fund Migration Modal */}
+      <FundTransferModal
+        isOpen={isTransferModalOpen}
+        onClose={() => setIsTransferModalOpen(false)}
+        mainBalance={mainBalance}
+        tradingBalance={effectiveTradingBalance}
+        onTransfer={(from, to, amt) => {
+          if (onTransferFunds) {
+            onTransferFunds(from, to, amt);
+          }
+        }}
+      />
     </header>
   );
 };

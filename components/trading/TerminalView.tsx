@@ -9,7 +9,7 @@ import { TradingPair } from './AssetSelector';
 import { Trade } from '../../hooks/useTrades';
 import { MobileTab } from './MobileTradeNav';
 import Skeleton from '../common/Skeleton';
-import { BarChart2, Wallet, Users, BookOpen, User, Settings, Activity, Layers, TrendingUp, History } from 'lucide-react';
+import { BarChart2, Wallet, Users, BookOpen, User, Settings, Activity, Layers, TrendingUp, History, Scale, Bot } from 'lucide-react';
 
 interface TerminalViewProps {
   terminalView: 'chart' | 'social';
@@ -251,6 +251,9 @@ const TerminalView: React.FC<TerminalViewProps> = ({
           </div>
           {[
             { id: 'markets', label: 'Trade Terminal', icon: BarChart2, desc: 'Advanced multi-timeframe trading interface', action: () => setAssetSelectorOpen(true) },
+            { id: 'stocks', label: 'Equities Terminal', icon: TrendingUp, desc: 'Institutional US Stocks (NVDA, AAPL, TSLA)' },
+            { id: 'predictions', label: 'Polymarket Predictions', icon: Scale, desc: 'Decentralized event binary markets & odds' },
+            { id: 'strategies', label: 'Auto-Trading / IRA', icon: Bot, desc: 'Roth IRA automated bots & quantitative algorithms' },
             { id: 'finances', label: 'Portfolio & Wallet', icon: Wallet, desc: 'Deposit, withdraw, and allocate capital' },
             { id: 'social', label: 'Social Copy Hub', icon: Users, desc: 'Mirror top master traders automatically' },
             { id: 'education', label: 'Velo Academy', icon: BookOpen, desc: 'Structured trading education & analytics' },
