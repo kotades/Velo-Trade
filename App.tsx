@@ -19,19 +19,44 @@ import Regulation from './components/Regulation';
 import Trading from './components/Trading';
 import AdminPortal from './components/admin/AdminPortal';
 import { useAuth } from './context/AuthContext';
+import { usePerformanceMonitor } from './hooks/usePerformanceMonitor';
+
 
 export type View = 'home' | 'login' | 'register' | 'faq' | 'terms' | 'privacy' | 'regulation' | 'trading' | 'admin';
 
 const App: React.FC = () => {
+  usePerformanceMonitor();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [currentView, setCurrentView] = useState<View>('home');
+
+  const [currentView, setCurrentView] = useState<View>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('velo_current_view') as View;
+      const validViews: View[] = ['home', 'login', 'register', 'faq', 'terms', 'privacy', 'regulation', 'trading', 'admin'];
+      if (saved && validViews.includes(saved)) {
+        return saved;
+      }
+    }
+    return 'home';
+  });
+
   const { user, isAdmin, loading } = useAuth();
 
-  // Route Protection for Admin View
+  // Route Protection & State Synchronization
   useEffect(() => {
-    if (currentView === 'admin' && !loading) {
-      if (!user || !isAdmin) {
-        setCurrentView('home');
+    if (loading) return;
+
+    if (currentView === 'admin' && (!user || !isAdmin)) {
+      setCurrentView('home');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('velo_current_view', 'home');
+      }
+      return;
+    }
+
+    if (user && (currentView === 'login' || currentView === 'register')) {
+      setCurrentView('trading');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('velo_current_view', 'trading');
       }
     }
   }, [currentView, user, isAdmin, loading]);
@@ -45,18 +70,28 @@ const App: React.FC = () => {
   }, []);
 
   const navigateTo = (view: View) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('velo_current_view', view);
+    }
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden scroll-smooth">
+    <div className="min-h-screen bg-[hsl(var(--color-bg))] text-zinc-50 overflow-x-hidden scroll-smooth">
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[hsl(var(--primary-500))] focus:text-white focus:rounded-lg transition-all"
+      >
+        Skip to main content
+      </a>
+
       {/* Dynamic Header - Hidden when in trading/admin mode for full immersion */}
       {currentView !== 'trading' && currentView !== 'admin' && (
         <Header isScrolled={isScrolled} navigateTo={navigateTo} currentView={currentView} />
       )}
       
-      <main>
+      <main id="main-content">
         {currentView === 'home' && (
           <>
             <Hero navigateTo={navigateTo} />
@@ -105,8 +140,8 @@ const App: React.FC = () => {
         {/* Background Decorative Elements - Only for landing views */}
         {currentView !== 'trading' && currentView !== 'admin' && (
           <>
-            <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-            <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-cyan-600/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+            <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[hsl(var(--primary-500)/0.05)] blur-[120px] rounded-full pointer-events-none -z-10"></div>
+            <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--secondary-500)/0.05)] blur-[120px] rounded-full pointer-events-none -z-10"></div>
           </>
         )}
       </main>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, query, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import GodModeEditor from './GodModeEditor';
+import { Search } from 'lucide-react';
 
 interface FirestoreUser {
   id: string;
@@ -66,7 +67,9 @@ const UserManagement: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-700">🔍</div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none">
+            <Search className="w-4 h-4" />
+          </div>
         </div>
       </div>
 

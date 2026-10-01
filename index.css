@@ -1,13 +1,64 @@
 @import "tailwindcss";
 
+:root {
+  /* ═══ Spacing & Sizing ═══ */
+  --space-1: 0.25rem;   /* 4px  */
+  --space-2: 0.5rem;    /* 8px  */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px — base */
+  --space-5: 1.5rem;    /* 24px */
+  --space-6: 2rem;      /* 32px */
+  --space-7: 3rem;      /* 48px */
+  --space-8: 4rem;      /* 64px */
+
+  /* ═══ Typography ═══ */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+
+  /* ═══ Colors (HSL) ═══ */
+  --color-bg: 240 10% 3.9%;      /* #09090b - zinc-950 */
+  --color-surface: 240 10% 7.5%; /* #121215 - zinc-900/50ish */
+  --color-border: 240 5% 15%;    /* #222226 - zinc-800/50ish */
+  
+  --color-text: 0 0% 98%;        /* #fafafa */
+  --color-text-muted: 240 5% 65%; /* zinc-400ish */
+  
+  --primary-500: 262 83% 58%;    /* #7c3aed - violet-600 */
+  --secondary-500: 188 86% 43%;  /* #06b6d4 - cyan-500 */
+  
+  --success: 142 71% 45%;        /* emerald-500 */
+  --danger: 0 84% 60%;           /* red-500 */
+  --warning: 38 92% 50%;         /* amber-500 */
+
+  /* ═══ Radii ═══ */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* ═══ Shadows ═══ */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(124, 58, 237, 0.3);
+}
+
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #09090b;
+  background-color: hsl(var(--color-bg));
   color: #fafafa;
 }
 
 .velo-gradient {
-  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #06b6d4 100%);
+  background: linear-gradient(135deg, hsl(var(--primary-500)) 0%, #4f46e5 50%, hsl(var(--secondary-500)) 100%);
 }
 
 .velo-text-gradient {
@@ -18,7 +69,7 @@ body {
 }
 
 .velo-border-gradient {
-  border-image: linear-gradient(135deg, #7c3aed, #06b6d4) 1;
+  border-image: linear-gradient(135deg, hsl(var(--primary-500)), hsl(var(--secondary-500))) 1;
 }
 
 @keyframes float {
@@ -49,13 +100,13 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(63, 63, 70, 0.5); /* zinc-700/50 */
-  border-radius: 10px;
+  border-radius: var(--radius-full);
   border: 1px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #06b6d4; /* Cyan-500 for that premium pop */
+  background-color: hsl(var(--secondary-500)); 
   box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
 }
 
@@ -67,7 +118,58 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+/* ═══ Motion & Accessibility ═══ */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(calc(-1 * var(--space-1))); }
+  75% { transform: translateX(var(--space-1)); }
+}
+
+.anim-shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fade-in {
+  animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--secondary-500));
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+.glow-indigo {
+  box-shadow: 0 0 30px -5px rgba(124, 58, 237, 0.3);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 30px -5px rgba(6, 182, 212, 0.3);
+}
+
+/* ═══ Staggered Animation Delays ═══ */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+
+@keyframes skeleton-shine {
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-shine {
+  animation: skeleton-shine 1.5s infinite;
+}
+
+/* Hide Firebase Emulator warning banner to avoid click interception and accessibility region issues in tests */
+.firebase-emulator-warning {
+  display: none !important;
 }

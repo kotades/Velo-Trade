@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View } from '../App';
 
@@ -17,77 +16,98 @@ const Instruments: React.FC<InstrumentsProps> = ({ navigateTo }) => {
   ];
 
   return (
-    <section className="py-24 bg-zinc-950 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <section className="relative py-32 px-4 bg-[hsl(var(--color-bg))] overflow-hidden" id="instruments">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[hsl(var(--secondary-500))]/5 rounded-full blur-[140px] pointer-events-none -z-10"></div>
       
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-12">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight uppercase italic pr-8">
-              Global <span className="velo-text-gradient inline-block mr-2">Instruments</span>
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col lg:flex-row items-end justify-between gap-10 mb-20 anim-fade-in">
+          <div className="max-w-3xl">
+            <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter uppercase italic leading-none">
+              Global <span className="velo-text-gradient">Instruments</span>
             </h2>
-            <p className="text-zinc-400 text-lg font-medium">
-              Trade over 250+ digital assets, commodities, and indices with the tightest spreads in the industry.
+            <p className="text-[hsl(var(--color-text-muted))] text-xl font-medium leading-relaxed">
+              Trade over 250+ institutional-grade digital assets, commodities, and global indices with ultra-low latency and the tightest spreads in the ecosystem.
             </p>
           </div>
           <button 
             onClick={() => navigateTo('register')}
-            className="group flex items-center gap-3 text-sm font-black uppercase tracking-widest text-cyan-400 hover:text-white transition-colors"
+            className="group flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-[hsl(var(--secondary-500))] hover:text-white transition-all duration-300"
           >
-            View All Assets
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            View Full Asset List
+            <div className="w-12 h-12 rounded-full border border-[hsl(var(--secondary-500))/0.3] flex items-center justify-center group-hover:bg-[hsl(var(--secondary-500))] group-hover:border-transparent transition-all">
+              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {assets.map((asset, idx) => (
             <div 
               key={idx} 
-              className="group p-6 rounded-[2rem] bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/80 hover:bg-zinc-900/50 transition-all duration-500 hover:-translate-y-1"
+              className="group relative p-8 rounded-[2.5rem] bg-[hsl(var(--color-surface)/0.4)] border border-[hsl(var(--color-border))] backdrop-blur-xl hover:border-[hsl(var(--secondary-500))/0.5] transition-all duration-500 anim-fade-in"
+              style={{ animationDelay: `${idx * 100}ms` }}
             >
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-zinc-950 flex items-center justify-center border border-zinc-800 group-hover:border-indigo-500/50 transition-colors">
-                    <span className="text-lg font-black text-zinc-500 group-hover:text-cyan-400 transition-colors">
+              {/* Asset Glow Effect */}
+              <div className={`absolute -inset-px rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl ${asset.trend === 'up' ? 'bg-[hsl(var(--success))/0.15]' : 'bg-[hsl(var(--danger))/0.15]'}`} />
+
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-5">
+                  <div className="relative w-16 h-16 rounded-2xl bg-[hsl(var(--color-bg))] flex items-center justify-center border border-[hsl(var(--color-border))] group-hover:border-[hsl(var(--secondary-500))/0.5] transition-all duration-500 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="text-2xl font-black text-[hsl(var(--color-text-muted))] group-hover:text-[hsl(var(--secondary-500))] transition-colors italic">
                       {asset.symbol[0]}
                     </span>
                   </div>
                   <div>
-                    <h4 className="text-white font-black uppercase tracking-tight">{asset.name}</h4>
-                    <span className="text-xs font-bold text-zinc-600 tracking-widest uppercase">{asset.symbol}</span>
+                    <h3 className="text-white text-lg font-black uppercase tracking-tight italic leading-tight">{asset.name}</h3>
+                    <span className="text-[10px] font-black text-[hsl(var(--color-text-muted))] tracking-[0.2em] uppercase">{asset.symbol}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-sm font-bold ${asset.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                  <div className={`text-sm font-black px-3 py-1 rounded-full ${asset.trend === 'up' ? 'text-[hsl(var(--success))] bg-[hsl(var(--success))/0.1]' : 'text-[hsl(var(--danger))] bg-[hsl(var(--danger))/0.1]'}`}>
                     {asset.change}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-end justify-between">
+              <div className="flex items-end justify-between relative z-10">
                 <div>
-                  <span className="block text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] mb-1">Current Price</span>
-                  <span className="text-2xl font-black text-white tracking-tighter">{asset.price}</span>
+                  <span className="block text-[10px] font-black text-[hsl(var(--color-text-muted))] uppercase tracking-[0.3em] mb-2">Live Valuation</span>
+                  <span className="text-3xl font-black text-white tracking-tighter leading-none">{asset.price}</span>
                 </div>
                 <button 
                   onClick={() => navigateTo('register')}
-                  className="px-5 py-2.5 bg-zinc-950 hover:bg-cyan-500 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white border border-zinc-800 hover:border-cyan-500 rounded-xl transition-all"
+                  className={`px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all duration-300 border ${
+                    asset.trend === 'up' 
+                    ? 'bg-white/5 text-white border-white/10 hover:bg-[hsl(var(--success))] hover:border-transparent hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
+                    : 'bg-white/5 text-white border-white/10 hover:bg-[hsl(var(--danger))] hover:border-transparent hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]'
+                  }`}
                 >
                   Trade
                 </button>
               </div>
 
-              {/* Mock Sparkline Decor */}
-              <div className="mt-6 h-8 w-full overflow-hidden opacity-20 group-hover:opacity-40 transition-opacity">
+              {/* Enhanced Sparkline Decor */}
+              <div className="mt-10 h-16 w-full overflow-hidden opacity-20 group-hover:opacity-60 transition-all duration-700">
                 <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 20">
+                  <defs>
+                    <linearGradient id={`grad-${idx}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor={asset.trend === 'up' ? "hsl(var(--success))" : "hsl(var(--danger))"} stopOpacity="0" />
+                      <stop offset="50%" stopColor={asset.trend === 'up' ? "hsl(var(--success))" : "hsl(var(--danger))"} stopOpacity="1" />
+                      <stop offset="100%" stopColor={asset.trend === 'up' ? "hsl(var(--success))" : "hsl(var(--danger))"} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
                   <path 
                     d={asset.trend === 'up' ? "M0 15 L10 12 L20 16 L30 10 L40 14 L50 8 L60 12 L70 5 L80 9 L90 2 L100 6" : "M0 5 L10 8 L20 4 L30 12 L40 9 L50 15 L60 11 L70 18 L80 14 L90 19 L100 15"} 
                     fill="none" 
-                    stroke={asset.trend === 'up' ? "#10b981" : "#f43f5e"} 
-                    strokeWidth="2"
+                    stroke={`url(#grad-${idx})`}
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="group-hover:translate-x-2 transition-transform duration-[2s] ease-linear"
                   />
                 </svg>
               </div>

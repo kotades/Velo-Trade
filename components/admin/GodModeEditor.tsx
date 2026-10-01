@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
+import { X } from 'lucide-react';
 
 interface GodModeEditorProps {
   user: any;
@@ -50,7 +51,9 @@ const GodModeEditor: React.FC<GodModeEditorProps> = ({ user, onClose }) => {
             <h3 className="text-xl font-black text-white uppercase tracking-tighter">Edit User: <span className="text-cyan-400">{user.displayName}</span></h3>
             <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1">UID: {user.id}</p>
           </div>
-          <button onClick={onClose} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-all">✕</button>
+          <button onClick={onClose} aria-label="Close" className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-all outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto custom-scrollbar">

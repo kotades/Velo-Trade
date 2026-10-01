@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TickerData } from '../../hooks/useMarketData';
 import OrderBook from './OrderBook';
+import { ChevronLeft, X, Layers, Info, TrendingUp, BarChart2 } from 'lucide-react';
 
 interface RightPanelProps {
   ticker: TickerData;
@@ -30,43 +31,66 @@ const RightPanel: React.FC<RightPanelProps> = ({ ticker, symbol, isOpen, onToggl
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 w-8 h-16 bg-zinc-900/90 border border-zinc-800 border-r-0 rounded-l-xl items-center justify-center text-zinc-500 hover:text-white transition-all"
+          aria-label="Open right panel"
+          className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 w-8 h-16 bg-zinc-900/90 border border-zinc-800 border-r-0 rounded-l-xl items-center justify-center text-zinc-500 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+          <ChevronLeft className="w-4 h-4" />
         </button>
       )}
 
       {/* Mobile overlay backdrop */}
       {isOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/60 z-40" onClick={onToggle} />
+        <button 
+          className="md:hidden fixed inset-x-0 top-14 bottom-14 bg-black/40 backdrop-blur-sm z-40 transition-all cursor-default" 
+          onClick={onToggle}
+          aria-label="Close right panel"
+        />
       )}
 
       {/* Panel */}
       <div className={`
-        fixed md:relative right-0 top-0 h-full z-50 md:z-auto
-        w-[320px] md:w-[340px] border-l border-zinc-900 bg-zinc-950/95 md:bg-zinc-950/80 backdrop-blur-xl md:backdrop-blur-none
-        flex flex-col transition-transform duration-300 ease-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full md:hidden'}
+        fixed md:relative right-0 
+        top-14 bottom-14 md:top-0 md:bottom-0 h-auto md:h-full z-50 md:z-auto
+        w-[280px] sm:w-[320px] md:w-[340px] border-l border-zinc-900 bg-zinc-950/95 md:bg-zinc-900/95 backdrop-blur-2xl
+        flex flex-col transition-transform duration-500 ease-in-out shadow-2xl md:shadow-none
+        ${isOpen ? 'translate-x-0' : 'translate-x-full md:invisible'}
       `}>
-        {/* Header with Tabs */}
-        <div className="h-16 border-b border-zinc-900 flex items-center justify-between px-2 shrink-0">
-          <div className="flex bg-zinc-900/50 rounded-lg p-1 ml-2">
+        {/* Header with Tabs & Description */}
+        <div className="border-b border-zinc-900 shrink-0">
+          <div className="h-12 md:h-14 flex items-center justify-between px-3">
+            <div className="flex bg-zinc-900/80 rounded-lg p-0.5" role="tablist">
+              <button 
+                onClick={() => setActiveTab('orders')}
+                role="tab"
+                aria-selected={activeTab === 'orders'}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 ${activeTab === 'orders' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                <Layers className="w-3 h-3 text-cyan-400" />
+                Orders
+              </button>
+              <button 
+                onClick={() => setActiveTab('info')}
+                role="tab"
+                aria-selected={activeTab === 'info'}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 ${activeTab === 'info' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                <Info className="w-3 h-3 text-secondary-400" />
+                Info
+              </button>
+            </div>
             <button 
-              onClick={() => setActiveTab('orders')}
-              className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${activeTab === 'orders' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+              onClick={onToggle} 
+              aria-label="Close right panel"
+              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-zinc-900 text-zinc-500 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
             >
-              Orders
-            </button>
-            <button 
-              onClick={() => setActiveTab('info')}
-              className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${activeTab === 'info' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
-            >
-              Info
+              <X className="w-4 h-4" />
             </button>
           </div>
-          <button onClick={onToggle} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-900 text-zinc-500 hover:text-white transition-all mr-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
+          <div className="px-3 py-1 bg-zinc-950/40 border-t border-zinc-900/80 text-[8px] text-zinc-500 font-medium">
+            {activeTab === 'orders' 
+              ? 'Level 2 Depth • Live bid/ask spread and order aggregation' 
+              : '24-Hour Statistical Highlights & Underlying Asset Fundamentals'}
+          </div>
         </div>
 
         {/* Content */}

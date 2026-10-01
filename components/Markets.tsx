@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 const Markets: React.FC = () => {
@@ -24,21 +23,21 @@ const Markets: React.FC = () => {
   };
 
   return (
-    <section id="markets" className="py-24 bg-zinc-950 relative border-t border-zinc-900">
+    <section id="markets" className="py-32 bg-[hsl(var(--color-bg))] relative border-t border-[hsl(var(--color-border)/0.5)]">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 uppercase italic pr-8">
-            Live <span className="velo-text-gradient inline-block mr-2">Markets</span>
+        <div className="text-center mb-16 anim-fade-in">
+          <h2 className="text-4xl md:text-6xl font-black text-white mb-8 uppercase italic leading-none">
+            Live <span className="velo-text-gradient inline-block">Markets</span>
           </h2>
-          <div className="flex justify-center gap-4">
+          <div className="inline-flex p-1.5 bg-[hsl(var(--color-surface))] rounded-2xl border border-[hsl(var(--color-border))] gap-2">
             {(['crypto', 'commodities', 'stocks'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all ${
                   activeTab === tab 
-                  ? 'velo-gradient text-white' 
-                  : 'bg-zinc-900 text-zinc-500 hover:text-white border border-zinc-800'
+                  ? 'velo-gradient text-white shadow-lg' 
+                  : 'text-[hsl(var(--color-text-muted))] hover:text-white hover:bg-white/5'
                 }`}
               >
                 {tab}
@@ -47,37 +46,45 @@ const Markets: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-zinc-900/30 rounded-[2rem] border border-zinc-800/50 overflow-hidden backdrop-blur-sm">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-zinc-800/50">
-                <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Asset</th>
-                <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Price</th>
-                <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest text-right">24h Change</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assets[activeTab].map((asset, idx) => (
-                <tr key={idx} className="hover:bg-zinc-800/20 transition-colors group cursor-pointer">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center font-black text-zinc-500 group-hover:text-cyan-400 transition-colors">
-                        {asset.symbol[0]}
-                      </div>
-                      <div>
-                        <div className="text-sm font-black text-white uppercase">{asset.name}</div>
-                        <div className="text-[10px] font-bold text-zinc-600">{asset.symbol}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 text-sm font-black text-white">{asset.price}</td>
-                  <td className={`px-8 py-6 text-right font-bold text-sm ${asset.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}>
-                    {asset.change}
-                  </td>
+        <div className="bg-[hsl(var(--color-surface)/0.3)] rounded-[2.5rem] border border-[hsl(var(--color-border)/0.5)] overflow-hidden backdrop-blur-xl shadow-2xl anim-fade-in">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-[hsl(var(--color-border)/0.5)] bg-[hsl(var(--color-surface)/0.5)]">
+                  <th className="px-10 py-8 text-xs font-black text-[hsl(var(--color-text-muted))] uppercase tracking-[0.2em]">Asset</th>
+                  <th className="px-10 py-8 text-xs font-black text-[hsl(var(--color-text-muted))] uppercase tracking-[0.2em]">Price</th>
+                  <th className="px-10 py-8 text-xs font-black text-[hsl(var(--color-text-muted))] uppercase tracking-[0.2em] text-right">24h Change</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {assets[activeTab].map((asset, idx) => (
+                  <tr key={idx} className="hover:bg-white/[0.03] transition-colors group cursor-pointer border-b border-[hsl(var(--color-border)/0.2)] last:border-0">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-2xl bg-[hsl(var(--color-bg))] border border-[hsl(var(--color-border))] flex items-center justify-center font-black text-[hsl(var(--color-text-muted))] group-hover:text-[hsl(var(--secondary-400))] group-hover:border-[hsl(var(--secondary-400)/0.5)] transition-all duration-300">
+                          {asset.symbol[0]}
+                        </div>
+                        <div>
+                          <div className="text-base font-black text-white uppercase tracking-tight">{asset.name}</div>
+                          <div className="text-xs font-bold text-[hsl(var(--color-text-muted))]">{asset.symbol}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-10 py-8 text-lg font-black text-white tracking-tight">{asset.price}</td>
+                    <td className={`px-10 py-8 text-right font-black text-lg ${asset.trend === 'up' ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger))]'}`}>
+                      <div className="flex items-center justify-end gap-2">
+                        {asset.trend === 'up' ? '↑' : '↓'}
+                        {asset.change}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="p-8 bg-[hsl(var(--color-surface)/0.5)] border-t border-[hsl(var(--color-border)/0.5)] text-center">
+             <button className="text-sm font-black text-[hsl(var(--primary-400))] hover:text-white transition-colors uppercase tracking-[0.2em]">View All Assets →</button>
+          </div>
         </div>
       </div>
     </section>
@@ -85,3 +92,4 @@ const Markets: React.FC = () => {
 };
 
 export default Markets;
+

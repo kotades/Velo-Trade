@@ -1,20 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { createChart, IChartApi, ISeriesApi, ColorType, CandlestickSeries, LineSeries } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, ColorType, CandlestickSeries, LineSeries, IPriceLine } from 'lightweight-charts';
 import { Candle } from '../../hooks/useMarketData';
 import { useIndicators } from '../../hooks/useIndicators';
+import { Trade } from '../../hooks/useTrades';
 
 interface CandlestickChartProps {
   candles: Candle[];
-  currentPrice: number;
+  activeTrades?: Trade[];
 }
 
-const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPrice }) => {
+const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, activeTrades = [] }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const ma7SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const ma25SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const ma99SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const priceLinesRef = useRef<Map<string, IPriceLine>>(new Map());
 
   const { ma7, ma25, ma99 } = useIndicators(candles);
 
@@ -51,6 +53,7 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPri
         borderColor: 'rgba(30, 41, 59, 0.5)',
         timeVisible: true,
         secondsVisible: false,
+        fixRightEdge: true,
       },
       handleScroll: {
         vertTouchDrag: false,
@@ -61,6 +64,9 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPri
           top: 0.1,
           bottom: 0.2,
         },
+      },
+      localization: {
+        locale: navigator.language,
       },
     });
 
@@ -73,9 +79,9 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPri
       wickDownColor: '#f43f5e',
     });
 
-    const ma7Series = chart.addSeries(LineSeries, { color: '#fbbf24', lineWidth: 1, title: 'MA7' });
-    const ma25Series = chart.addSeries(LineSeries, { color: '#c084fc', lineWidth: 1, title: 'MA25' });
-    const ma99Series = chart.addSeries(LineSeries, { color: '#60a5fa', lineWidth: 1, title: 'MA99' });
+    const ma7Series = chart.addSeries(LineSeries, { color: '#fbbf24', lineWidth: 1, title: 'MA7', lastValueVisible: true, priceLineVisible: true });
+    const ma25Series = chart.addSeries(LineSeries, { color: '#c084fc', lineWidth: 1, title: 'MA25', lastValueVisible: true, priceLineVisible: true });
+    const ma99Series = chart.addSeries(LineSeries, { color: '#60a5fa', lineWidth: 1, title: 'MA99', lastValueVisible: true, priceLineVisible: true });
 
     chartRef.current = chart;
     candlestickSeriesRef.current = candlestickSeries;
@@ -127,11 +133,72 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPri
     }
   }, [candles, ma7, ma25, ma99]);
 
+  // Handle Active Trade Price Lines & Timers
+  useEffect(() => {
+    if (!candlestickSeriesRef.current || !activeTrades) return;
+
+    const candlestickSeries = candlestickSeriesRef.current;
+    console.log('[CandlestickChart] Syncing price lines. Active trades:', activeTrades.length);
+    
+    // 1. Sync Price Lines (Create new or filter out closed)
+    const activeIds = new Set(activeTrades.map(t => t.id));
+    
+    // Remove lines for trades that are no longer active
+    priceLinesRef.current.forEach((line, id) => {
+      if (!activeIds.has(id)) {
+        console.log('[CandlestickChart] Removing price line for trade:', id);
+        candlestickSeries.removePriceLine(line);
+        priceLinesRef.current.delete(id);
+      }
+    });
+
+    // Add or Update lines for active trades
+    activeTrades.forEach(trade => {
+      let line = priceLinesRef.current.get(trade.id);
+      const isBuy = trade.type === 'buy';
+      const color = isBuy ? '#10b981' : '#f43f5e';
+
+      if (!line) {
+        console.log('[CandlestickChart] Creating price line for trade:', trade.id, 'at price:', trade.entryPrice);
+        line = candlestickSeries.createPriceLine({
+          price: trade.entryPrice,
+          color: color,
+          lineWidth: 2,
+          lineStyle: 2, // Dashed
+          axisLabelVisible: true,
+          title: `${isBuy ? 'BUY' : 'SELL'} $${trade.amount}`,
+        });
+        priceLinesRef.current.set(trade.id, line);
+      }
+    });
+
+    // 2. Timer Update Loop
+    const timerInterval = setInterval(() => {
+      const now = Date.now();
+      activeTrades.forEach(trade => {
+        const line = priceLinesRef.current.get(trade.id);
+        if (line) {
+          const remainingMs = Math.max(0, trade.expiryTime - now);
+          const seconds = Math.floor(remainingMs / 1000);
+          const mins = Math.floor(seconds / 60);
+          const secs = seconds % 60;
+          const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+          
+          line.applyOptions({
+            title: `${trade.type === 'buy' ? 'BUY' : 'SELL'} $${trade.amount} | ${timeStr}`
+          });
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(timerInterval);
+  }, [activeTrades]);
+
   return (
-    <div className="w-full h-full relative group">
-      <div ref={chartContainerRef} className="w-full h-full" />
+    <div className="w-full h-full relative group" aria-label="Financial Candlestick Chart">
+      <div ref={chartContainerRef} className="w-full h-full" tabIndex={0} />
       
-      <div className="absolute top-4 left-4 z-10 flex gap-4 pointer-events-none">
+      <div className="absolute top-4 left-4 z-10 flex gap-4 pointer-events-none" aria-label="Moving Averages Legend">
         <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-md border border-white/5">
           <div className="w-2 h-2 rounded-full bg-[#fbbf24]" />
           <span className="text-[10px] font-bold text-[#fbbf24] uppercase">MA7</span>
@@ -149,4 +216,4 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({ candles, currentPri
   );
 };
 
-export default CandlestickChart;
+export default React.memo(CandlestickChart);

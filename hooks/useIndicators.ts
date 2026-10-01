@@ -22,8 +22,16 @@ const calculateSMA = (candles: Candle[], period: number) => {
 
   const sma: (number | null)[] = new Array(candles.length).fill(null);
 
-  for (let i = period - 1; i < candles.length; i++) {
-    const sum = candles.slice(i - period + 1, i + 1).reduce((acc, c) => acc + c.close, 0);
+  let sum = 0;
+  // Calculate sum for the first window
+  for (let i = 0; i < period; i++) {
+    sum += candles[i].close;
+  }
+  sma[period - 1] = sum / period;
+
+  // Slide the window
+  for (let i = period; i < candles.length; i++) {
+    sum += candles[i].close - candles[i - period].close;
     sma[i] = sum / period;
   }
 

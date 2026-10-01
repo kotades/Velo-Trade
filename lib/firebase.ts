@@ -15,4 +15,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
+  console.log('Connecting to Firebase Emulators...');
+  const { connectAuthEmulator } = await import('firebase/auth');
+  const { connectFirestoreEmulator } = await import('firebase/firestore');
+  connectAuthEmulator(auth, 'http://localhost:9099');
+  connectFirestoreEmulator(db, 'localhost', 8080);
+}
+
 export default app;
